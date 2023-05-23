@@ -6,14 +6,14 @@ const app = fastify()
 
 app.get('/hello', async () => {
   // inserindo dados na tabela transactions
-  // const transaction = await knex('transactions')
-  //   .insert({
-  //     id: randomUUID(),
-  //     title: 'Testando api 1',
-  //     amount: 1000,
-  //   })
-  //   .returning('*')
-  // return transaction
+  const transaction = await knex('transactions')
+    .insert({
+      id: randomUUID(),
+      title: 'Testando api 1',
+      amount: 1000,
+    })
+    .returning('*')
+  return transaction
   // ---------------------------------------------
   // buscando os dados que foram inseridos
   // const transactions = await knex('transactions').select('*')
