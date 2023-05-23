@@ -5,4 +5,5 @@ export const knex = setuKnex({
   connection: {
     filename: './tmp/app.db',
   },
+  useNullAsDefault: true,
 })
