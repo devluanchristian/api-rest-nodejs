@@ -5,6 +5,32 @@ import { z } from 'zod'
 
 // plugin
 export async function transactionsRoutes(app: FastifyInstance) {
+  // busca transações
+  app.get('/', async () => {
+    const transactions = await knex('transactions').select('*')
+    return { transactions }
+  })
+  // busca somente uma transação
+  app.get('/:id', async (request) => {
+    const getTransactionsParamsSchema = z.object({
+      id: z.string().uuid(),
+    })
+    const { id } = getTransactionsParamsSchema.parse(request.params)
+    const transactions = await knex('transactions')
+      .select()
+      .where('id', id)
+      .first()
+    return { transactions }
+  })
+
+  app.get('/summary', async () => {
+    const summary = await knex('transactions')
+      .sum('amount', { as: 'amount' })
+      .first()
+    return { summary }
+  })
+
+  // cria uma transação
   app.post('/', async (request, reply) => {
     const createTransactionBodySchema = z.object({
       title: z.string(),
@@ -20,12 +46,5 @@ export async function transactionsRoutes(app: FastifyInstance) {
       amount: type === 'credit' ? amount : amount * -1,
     })
     return reply.status(201).send()
-  })
-}
-
-export async function getTransactionsRoutes(app: FastifyInstance) {
-  app.get('/', async () => {
-    const getTransactions = await knex('transactions').select('*')
-    return getTransactions
   })
 }
